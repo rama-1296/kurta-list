@@ -1,0 +1,39 @@
+name: Build kurta list
+
+on:
+  push:
+  schedule:
+    - cron: "45 1 * * *"   # every day, early morning India time
+  workflow_dispatch:        # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build page and update private sheet
+        run: mkdir -p site && OUTPUT=site/index.html python kurta_list.py
+        env:
+          SHEET_URL: ${{ secrets.SHEET_URL }}
+          SHEET_TOKEN: ${{ secrets.SHEET_TOKEN }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site          # only the page is published, nothing else
+      - id: deploy
+        uses: actions/deploy-pages@v4
