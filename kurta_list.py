@@ -148,7 +148,7 @@ def tasva_page(offset, limit=100):
                 searchWord="", requestMode=None, storeId=None, customerId=0, cartId=0,
                 shopId=33, shopName="Tasva", regionID="UL", deviceId=TASVA_DEVICE_ID,
                 deviceToken=TASVA_DEVICE_TOKEN, deviceType="desktop", brand="Tasva",
-                geoLocation=-1, fcmToken=-1, isS2SCall=False, hash="", validateHash=False)
+                geoLocation=-1, fcmToken=-1, isS2SCall=False, hash="2cd85ec024470b33aeb178f2a2a1a96d", validateHash=False)
     body = json.dumps({"data": data, "apiId": "URL_FETCH_PRODUCTS", "type": "plpengine"}).encode()
     req = urllib.request.Request("https://www.tasva.com/api/abfrl", data=body, headers={
         **HEADERS, "Content-Type": "application/json",
