@@ -28,7 +28,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 
 # ---- edit these -------------------------------------------------------------
-MIN_PRICE = 0
+MIN_PRICE = 2500
 MAX_PRICE = 5100
 MAX_PHOTOS = 8          # photos per kurta in the viewer
 
@@ -559,7 +559,9 @@ def main():
     elif missing:
         print(f"{len(missing)} kurtas have no colour in their name. "
               "Run `pip install pillow` and re-run to guess them from photos.")
-
+    
+    items = [it for it in items if "Black" not in it["colours"]]
+    
     if not items:
         print("Nothing came back from Tasva, so no page was written.")
         sys.exit(1)
