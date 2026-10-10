@@ -154,8 +154,17 @@ def tasva_page(offset, limit=100):
         **HEADERS, "Content-Type": "application/json",
         "Origin": "https://www.tasva.com",
         "Referer": "https://www.tasva.com/c/" + TASVA_CATEGORY["linkRewrite"]})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        reply = json.loads(r.read())
+    reply = None
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                reply = json.loads(r.read())
+            break
+        except urllib.error.HTTPError as e:
+            print(f"  Tasva said {e.code}: {e.read().decode(errors='replace')[:200]}")
+            if attempt == 2:
+                raise
+            time.sleep(3 * (attempt + 1))
     products = (reply.get("results") or {}).get("products") or {}
     if not reply.get("success"):
         raise RuntimeError(str(reply)[:150])
